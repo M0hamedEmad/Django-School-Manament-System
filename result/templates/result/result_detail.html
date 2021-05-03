@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Result {{student|capfirst}}{% endblock title %}
+{% block content %}
+ <!-- Content Wrapper -->
+ <div id="content-wrapper" class="d-flex flex-column">
+
+    <!-- Main Content -->
+    <div id="content">
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+             <!-- Page Heading -->
+             <div class="d-sm-flex align-items-center justify-content-between mb-4">
+              <h1 class="h3 mb-0 text-gray-800">
+                <a href="{% url 'student' student.id %}">{{student.full_name|capfirst}}'s result </a>
+              </h1>
+          </div>
+
+            <!-- Student List -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">{{student.full_name}} 's result</h6>
+                </div>
+                <div class="card-body">
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                  <th>subject</th>
+                                  <th>year</th>
+                                  <th>term</th>
+                                  <th>exam score</th>
+                                  <th>subject score</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                  <th>subject</th>
+                                  <th>year</th>
+                                  <th>term</th>
+                                  <th>exam score</th>
+                                  <th>subject score</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                              {% for result in final_result %}
+                                <tr>
+                                  <td>{{result.subject}}</td>
+                                  <td>{{result.year}}</td>
+                                  <td>{{result.term}}</td>
+                                  <td>{{result.exam_score}}</td>
+                                  <td>{{result.subject_score}}</td>
+                                </tr>
+                              {% endfor %}
+                            </tbody>
+                        </table>
+                        <div>
+                          total score: {{total_score}} / {{total_subjects_score}}
+                        </div>
+                        
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <a href="{% url 'result_delete' student.id year term %}" class="btn btn-info mb-3 ml-4">Delete</a>
+        <!-- /.container-fluid -->
+
+    </div>
+    <!-- End of Main Content -->
+{% endblock content %}

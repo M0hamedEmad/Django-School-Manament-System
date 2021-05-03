@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Result Create{% endblock title %}
+{% block content %}
+<div id="content-wrapper" class="d-flex flex-column">
+    <div id="content">
+        <div class="container-fluid">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{form|crispy}}
+                <hr>
+                {{ result_form.management_form }}
+                {% for r_form in result_form %}
+                <div class="m-3">
+                    {{r_form|crispy}}
+                </div>
+                <hr>
+                {% endfor %}
+                <input type="submit" value="submit" class="btn btn-info">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

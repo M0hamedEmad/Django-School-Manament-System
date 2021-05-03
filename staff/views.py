@@ -7,13 +7,14 @@ from django.views.generic import (
     DeleteView,
     ListView
     )
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django_filters.views import FilterView
 from .filters import StaffFilter
 from .models import Staff, JobType
 
 # Start Staff Views
 
-class StaffListView(ListView):
+class StaffListView(LoginRequiredMixin, ListView):
     model               = Staff
     template_name       = 'staff/staff_list.html'
     context_object_name = 'staff'
@@ -23,26 +24,26 @@ class StaffListView(ListView):
         return filter
         
       
-class StaffDetailView(DetailView):
+class StaffDetailView(LoginRequiredMixin, DetailView):
     model = Staff
     context_object_name = 'staff'
 
 
-class StaffCreateView(CreateView):
+class StaffCreateView(LoginRequiredMixin, CreateView):
     model = Staff
     fields = '__all__'
     
     def get_success_url(self, **kwargs):
         return reverse_lazy('staff_detail', kwargs={"pk":self.object.id})
 
-class StaffUpdateView(UpdateView):
+class StaffUpdateView(LoginRequiredMixin, UpdateView):
     model = Staff
     fields = '__all__'
 
     def get_success_url(self, **kwargs):
         return reverse_lazy('staff_detail', kwargs={"pk":self.object.id})
 
-class StaffDeleteView(DeleteView):
+class StaffDeleteView(LoginRequiredMixin, DeleteView):
     model = Staff
     context_object_name = 'staff'
     
@@ -54,7 +55,7 @@ class StaffDeleteView(DeleteView):
 
 # Start Job Type Views
 
-class JobTypeListView(FilterView):
+class JobTypeListView(LoginRequiredMixin, FilterView):
     model               = JobType
     template_name       = 'staff/job_type_filter.html'
     context_object_name = 'job_type'
@@ -66,7 +67,7 @@ class JobTypeListView(FilterView):
         return paginate_by
 
 
-class JobTypeCreateView(CreateView):
+class JobTypeCreateView(LoginRequiredMixin, CreateView):
     model = JobType
     template_name = 'staff/staff_form.html'
     fields = '__all__'
@@ -74,7 +75,7 @@ class JobTypeCreateView(CreateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('job_type')
 
-class JobTypeUpdateView(UpdateView):
+class JobTypeUpdateView(LoginRequiredMixin, UpdateView):
     model = JobType
     template_name = 'staff/staff_form.html'
     fields = '__all__'
@@ -82,7 +83,7 @@ class JobTypeUpdateView(UpdateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('job_type')
 
-class JobTypeDeleteView(DeleteView):
+class JobTypeDeleteView(LoginRequiredMixin, DeleteView):
     model = JobType
     context_object_name = 'staff'
     template_name = 'staff/staff_confirm_delete.html'

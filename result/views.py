@@ -8,6 +8,7 @@ from django.views.generic import (
     CreateView,
     DeleteView,
 )
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django_filters.views import FilterView
 from student.models import Student
 from .models import Result
@@ -20,7 +21,7 @@ def is_element_exisits(year_term, results, student):
             return True
         return
 
-class AllRusltView(FilterView):
+class AllRusltView(LoginRequiredMixin, FilterView):
     model = Result
     template_name = 'result/results_list.html'
     filterset_class = ResultFilter
@@ -44,7 +45,7 @@ class AllRusltView(FilterView):
         return context
         
     
-class AllStudentResultDetailView(DetailView):
+class AllStudentResultDetailView(LoginRequiredMixin, DetailView):
     model = Student
     template_name = 'result/all_result_detail.html'
     context_object_name = 'student'
@@ -69,7 +70,7 @@ class AllStudentResultDetailView(DetailView):
         
 
 
-class ResultDetailView(DetailView):
+class ResultDetailView(LoginRequiredMixin, DetailView):
     model = Student
     template_name = 'result/result_detail.html'
     context_object_name = 'student'
@@ -103,7 +104,7 @@ class ResultDetailView(DetailView):
         return context
         
         
-class ResultCreateView(CreateView):
+class ResultCreateView(LoginRequiredMixin, CreateView):
     model = Result
     template_name = 'result/result_form.html'
     fields = ('student', 'term', 'year')
@@ -147,7 +148,7 @@ class ResultCreateView(CreateView):
             return redirect('students_list')
         
         
-class DetleteResultView(DeleteView):
+class DetleteResultView(LoginRequiredMixin, DeleteView):
     model = Student
     template_name = 'result/result_delete_confirm.html'
 

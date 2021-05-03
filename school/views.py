@@ -7,12 +7,13 @@ from django.views.generic import (
     DeleteView,
     ListView
     )
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django_filters.views import FilterView
 from .models import ClassRoom, Course, Grade
 
 # Start ClassRoom Views
 
-class ClassRoomListView(FilterView):
+class ClassRoomListView(LoginRequiredMixin, FilterView):
     model            = ClassRoom
     template_name    = 'school/class_room_list.html'
     filterset_fields = ('title', 'grade',)
@@ -23,11 +24,11 @@ class ClassRoomListView(FilterView):
         return paginate_by
         
       
-class ClassRoomDetailView(DetailView):
+class ClassRoomDetailView(LoginRequiredMixin, DetailView):
     model = ClassRoom
     template_name = 'school/class_room_detail.html'
 
-class ClassRoomCreateView(CreateView):
+class ClassRoomCreateView(LoginRequiredMixin, CreateView):
     model = ClassRoom
     fields = '__all__'
     template_name = 'school/class_room_form.html'
@@ -35,7 +36,7 @@ class ClassRoomCreateView(CreateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('class_room_detail', kwargs={"pk":self.object.id})
 
-class ClassRoomUpdateView(UpdateView):
+class ClassRoomUpdateView(LoginRequiredMixin, UpdateView):
     model = ClassRoom
     fields = '__all__'
     template_name = 'school/class_room_form.html'
@@ -43,7 +44,7 @@ class ClassRoomUpdateView(UpdateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('class_room_detail', kwargs={"pk":self.object.id})
 
-class ClassRoomDeleteView(DeleteView):
+class ClassRoomDeleteView(LoginRequiredMixin, DeleteView):
     model = ClassRoom
     template_name = 'school/class_room_confirm_delete.html'
     
@@ -55,7 +56,7 @@ class ClassRoomDeleteView(DeleteView):
 
 # Start Grade Views
 
-class GradeListView(FilterView):
+class GradeListView(LoginRequiredMixin, FilterView):
     model            = Grade
     template_name    = 'school/grade_list.html'
     filterset_fields = ('title',)
@@ -66,7 +67,7 @@ class GradeListView(FilterView):
         return paginate_by
         
 
-class GradeCreateView(CreateView):
+class GradeCreateView(LoginRequiredMixin, CreateView):
     model = Grade
     fields = '__all__'
     template_name = 'school/grade_form.html'
@@ -74,7 +75,7 @@ class GradeCreateView(CreateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('grade')
 
-class GradeUpdateView(UpdateView):
+class GradeUpdateView(LoginRequiredMixin, UpdateView):
     model = Grade
     fields = '__all__'
     template_name = 'school/grade_form.html'
@@ -82,7 +83,7 @@ class GradeUpdateView(UpdateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('grade')
 
-class GradeDeleteView(DeleteView):
+class GradeDeleteView(LoginRequiredMixin, DeleteView):
     model = Grade
     template_name = 'school/class_room_confirm_delete.html'
     
@@ -94,7 +95,7 @@ class GradeDeleteView(DeleteView):
 
 # Start Course Views
 
-class CourseListView(FilterView):
+class CourseListView(LoginRequiredMixin, FilterView):
     model            = Course
     template_name    = 'school/grade_list.html'
     filterset_fields = ('title',)
@@ -104,7 +105,7 @@ class CourseListView(FilterView):
         return paginate_by
         
 
-class CourseCreateView(CreateView):
+class CourseCreateView(LoginRequiredMixin, CreateView):
     model = Course
     fields = '__all__'
     template_name = 'school/grade_form.html'
@@ -112,7 +113,7 @@ class CourseCreateView(CreateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('course')
 
-class CourseUpdateView(UpdateView):
+class CourseUpdateView(LoginRequiredMixin, UpdateView):
     model = Course
     fields = '__all__'
     template_name = 'school/grade_form.html'
@@ -120,7 +121,7 @@ class CourseUpdateView(UpdateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('course')
 
-class CourseDeleteView(DeleteView):
+class CourseDeleteView(LoginRequiredMixin, DeleteView):
     model = Course
     template_name = 'school/class_room_confirm_delete.html'
     

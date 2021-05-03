@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{%  load student_app_extras %}
+{% load crispy_forms_tags %}
+{% block title %}Student{% endblock title %}
+{% block content %}
+ <!-- Content Wrapper -->
+ <div id="content-wrapper" class="d-flex flex-column">
+
+    <!-- Main Content -->
+    <div id="content">
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+             <!-- Page Heading -->
+             <div class="d-sm-flex align-items-center justify-content-between mb-4">
+              <h1 class="h3 mb-0 text-gray-800">
+                Student
+                {% if 'family' in request.path %}
+                 Family 
+                {% endif %} List
+              </h1>
+              {% if 'family' in request.path %}
+                <a href="{% url 'create_student_family' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                  Add New Student Family</a>
+              {% else %}
+                <a href="{% url 'create_student' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                  Add New Student</a>
+              {% endif %}
+          </div>
+
+            <!-- Student List -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Student List</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="">
+                                <div class="dropdown">
+                                    Show
+                                    <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      {% if request.GET.entries %}
+                                        {{request.GET.entries}}
+                                      {% else %}
+                                        25
+                                      {% endif %}
+                                    </a>
+                                  
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                      <a class="dropdown-item" href="?page={{request.GET.page}}&entries=10">10</a>
+                                      <a class="dropdown-item" href="?page={{request.GET.page}}&entries=25">25</a>
+                                      <a class="dropdown-item" href="?page={{request.GET.page}}&entries=50">50</a>
+                                      <a class="dropdown-item" href="?page={{request.GET.page}}&entries=100">100</a>
+                                    </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="mb-2">
+
+                               <form method="GET">
+                                    <div class="row student-filter-from">
+                                        {{filter.form|crispy}}
+                                        <input type="submit" value="Filter" class="btn btn-info ml-2 h-50">
+                                    </div>
+                               </form>
+
+                                <!-- <label for="search" class="form-label">Search</label>
+                                <input type="search" class="form-control w-50" id="search" placeholder="Write name of stuedent"> -->
+                              </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                          {% if 'family' in request.path %}
+                          <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>phone</th>
+                                <th>Address</th>
+                                <th>status</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Name</th>
+                                <th>phone</th>
+                                <th>Address</th>
+                                <th>status</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            {% for student in students %}
+                            <tr>
+                                <td><a href="{% url 'student_family' student.id %}">{{student.full_name}}</a></td>
+                                <td>{{student.phone}}</td>
+                                <td>{{student.address}}</td>
+                                {% if student.status %}
+                                <td>Active</td>
+                                {% else %}
+                                <td>inactive</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                          {% else %}
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Grade</th>
+                                    <th>Age</th>
+                                    <th>phone</th>
+                                    <th>Address</th>
+                                    <th>Gender</th>
+                                    <th>Date Of Joined</th>
+                                    <th>status</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Grade</th>
+                                    <th>Age</th>
+                                    <th>phone</th>
+                                    <th>Address</th>
+                                    <th>Gender</th>
+                                    <th>Date Of Joined</th>
+                                    <th>status</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                {% for student in students %}
+                                <tr>
+                                    <td><a href="{% url 'student' student.id %}">{{student.full_name}}</a></td>
+                                    <td>{{student.grade}}</td>
+                                    <td>{{student.date_of_birth|timesince|upto:','}}</td>
+                                    <td>{{student.phone}}</td>
+                                    <td>{{student.address}}</td>
+                                    <td>{{student.gender}}</td>
+                                    <td>{{student.date_of_joined|date:'Y-m-d'}}</td>
+                                    {% if student.status %}
+                                    <td>Active</td>
+                                    {% else %}
+                                    <td>inactive</td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                              </tbody>
+                              {% endif %}
+                        </table>
+
+                        <!-- Start Pagination -->
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-end">
+                            {% if page_obj.has_previous %}
+                              <li class="page-item">
+                                <a class="page-link" href="?page={{page_obj.previous_page_number }}" aria-label="Previous">
+                                  <span aria-hidden="true">&laquo;</span>
+                                  <span class="sr-only">Previous</span>
+                                </a>
+                              </li>
+                            {% endif %}
+                            {% for page in page_obj.paginator.page_range %}
+                              {% if page == page_obj.number %}
+                                <li class="page-item active"><a class="page-link" href="?page={{page}}&rentries={{request.GET.entries}}">{{page}}</a></li>
+                              {% elif page == page_obj.number|add:1 or page == page_obj.number|add:2 %}
+                                <li class="page-item"><a class="page-link" href="?page={{page}}&entries={{request.GET.entries}}">{{page}}</a></li>
+                              {% elif page == page_obj.number|add:-1 or page == page_obj.number|add:-2 %}
+                                <li class="page-item"><a class="page-link" href="?page={{page}}&entries={{request.GET.entries}}">{{page}}</a></li>
+                              {% endif %}
+                            {% endfor %}
+                            {% if page_obj.has_next %}
+                              <li class="page-item">
+                                <a class="page-link" href="?page={{page_obj.next_page_number }}" aria-label="Next">
+                                  <span aria-hidden="true">&raquo;</span>
+                                  <span class="sr-only">Next</span>
+                                </a>
+                              </li>
+                            {% endif %}
+
+                            </ul>
+                          </nav>
+                        <!-- End Pagination -->
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+    </div>
+    <!-- End of Main Content -->
+{% endblock content %}

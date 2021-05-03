@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{%  load student_app_extras %}
+{% load crispy_forms_tags %}
+{% block title %}School App{% endblock title %}
+{% block content %}
+ <!-- Content Wrapper -->
+ <div id="content-wrapper" class="d-flex flex-column">
+
+    <!-- Main Content -->
+    <div id="content">
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                      {% if 'grade' in request.path %}
+                        <h1 class="h3 mb-0 text-gray-800">
+                          grade list
+                        </h1>
+                          <a href="{% url 'grade_create' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                            Add New Grade  </a>
+                      {% else %}
+                        <h1 class="h3 mb-0 text-gray-800">
+                          course list
+                        </h1>
+                          <a href="{% url 'course_create' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                            Add New Course  </a>
+                      {% endif %}
+                  </div>
+
+            <!-- Student List -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary"> List</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="m-1">
+                              Show
+                                <div class="dropdown">
+                                    <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      {% if request.GET.entries %}
+                                        {{request.GET.entries}}
+                                      {% else %}
+                                        25
+                                      {% endif %}
+                                    </a>
+                                  
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                      <a class="dropdown-item" href="?page={{request.GET.page}}&entries=10">10</a>
+                                      <a class="dropdown-item" href="?page={{request.GET.page}}&entries=25">25</a>
+                                      <a class="dropdown-item" href="?page={{request.GET.page}}&entries=50">50</a>
+                                      <a class="dropdown-item" href="?page={{request.GET.page}}&entries=100">100</a>
+                                    </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="mb-2">
+
+                               <form method="GET">
+                                    <div class="row student-filter-from" style="margin: -8px;">
+                                        {{filter.form|crispy}}
+                                        <input type="submit" value="Filter" class="btn btn-info ml-2 h-50 m-4">
+                                    </div>
+                               </form>
+
+                                <!-- <label for="search" class="form-label">Search</label>
+                                <input type="search" class="form-control w-50" id="search" placeholder="Write name of stuedent"> -->
+                              </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                          {% if 'grade' in request.pathh %}
+                            <thead>
+                                <tr>
+                                  <th>Title</th>
+                                  <th>ClassRoom Count</th>
+                                  <th>Update</th>
+                                  <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                  <th>Title</th>
+                                  <th>ClassRoom Count</th>
+                                  <th>Update</th>
+                                  <th>Delete</th>
+                              </tr>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                {% for member in object_list %}
+                                <tr>
+                                    <td>{{member.title}}</td>
+                                    <td>{{member.classroom_set.all.count}}</td>
+                                    <td><a class="btn btn-outline-info" href="{% url 'grade_update' member.id %}">Update</a></td>
+                                    <td><a class="btn btn-outline-danger" href="{% url 'grade_delete' member.id %}">Delete</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            {% else %}
+                            <thead>
+                              <tr>
+                                  <th>Title</th>
+                                  <th>teachers Count</th>
+                                  <th>Grade Count</th>
+                                  <th>Update</th>
+                                  <th>Delete</th>
+                              </tr>
+                          </thead>
+                          <tfoot>
+                              <tr>
+                                <th>Title</th>
+                                <th>teachers Count</th>
+                                <th>Grade Count</th>
+                                <th>Update</th>
+                                <th>Delete</th>
+                            </tr>
+                              </tr>
+                          </tfoot>
+                          <tbody>
+                              {% for member in object_list %}
+                              <tr>
+                                  <td>{{member.title}}</td>
+                                  <td>{{member.teachers.all.count}}</td>
+                                  <td>{{member.grade.all.count}}</td>
+                                  <td><a class="btn btn-outline-info" href="{% url 'course_update' member.id %}">Update</a></td>
+                                  <td><a class="btn btn-outline-danger" href="{% url 'course_delete' member.id %}">Delete</a></td>
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                          {% endif %}
+                        </table>
+
+                        <!-- Start Pagination -->
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-end">
+                            {% if page_obj.has_previous %}
+                              <li class="page-item">
+                                <a class="page-link" href="?page={{page_obj.previous_page_number }}" aria-label="Previous">
+                                  <span aria-hidden="true">&laquo;</span>
+                                  <span class="sr-only">Previous</span>
+                                </a>
+                              </li>
+                            {% endif %}
+                            {% for page in page_obj.paginator.page_range %}
+                              {% if page == page_obj.number %}
+                                <li class="page-item active"><a class="page-link" href="?page={{page}}&rentries={{request.GET.entries}}">{{page}}</a></li>
+                              {% elif page == page_obj.number|add:1 or page == page_obj.number|add:2 %}
+                                <li class="page-item"><a class="page-link" href="?page={{page}}&entries={{request.GET.entries}}">{{page}}</a></li>
+                              {% elif page == page_obj.number|add:-1 or page == page_obj.number|add:-2 %}
+                                <li class="page-item"><a class="page-link" href="?page={{page}}&entries={{request.GET.entries}}">{{page}}</a></li>
+                              {% endif %}
+                            {% endfor %}
+                            {% if page_obj.has_next %}
+                              <li class="page-item">
+                                <a class="page-link" href="?page={{page_obj.next_page_number }}" aria-label="Next">
+                                  <span aria-hidden="true">&raquo;</span>
+                                  <span class="sr-only">Next</span>
+                                </a>
+                              </li>
+                            {% endif %}
+
+                            </ul>
+                          </nav>
+                        <!-- End Pagination -->
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+    </div>
+    <!-- End of Main Content -->
+{% endblock content %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Delete{% endblock title %}
+{% block content %}
+<div id="content-wrapper" class="d-flex flex-column">
+    <div id="content">
+        <div class="container-fluid">
+            <h1 class="h3 mb-2 text-gray-800">Delete {{object.title}}</h1>
+            <p class="mb-4">
+                Are you sure you want delete 
+                {{object.name}}
+            </p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="submit" value="Delete" class="btn btn-danger">
+                {% if 'grade' in request.path %}
+                    <a href="{% url 'grade' %}" class="btn btn-info">Cancel</a>
+                {% else %}
+                    <a href="{% url 'class_room_detail' object.id %}" class="btn btn-info">Cancel</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
